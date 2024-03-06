@@ -14,7 +14,7 @@ from tqdm.auto import tqdm
 
 
 
-#from train import Trainer   #import the trainer class from train.py
+#has to saperate next
 class Trainer:
     def __init__(
         self,
@@ -64,13 +64,17 @@ class Trainer:
             self.loss["train"].append(math.log(train_loss)) #using log loss 
             
         return self.loss
-    
+
+
 
 class UnstructuredL1normPrune:
-    def __init__(self, model, pruning_rate =0.5):
+    def __init__(self, model, epochs,train_loader,  criterion,optimizer,pruning_rate =0.5):
         self.model = model
         self.pruning_rate = pruning_rate
-        
+        self.optimizer=optimizer
+        self.epochs=epochs
+        self.train_loader=train_loader
+        self.criterion=criterion
 
     def prune_model(self):
         #prune the model and return it.
@@ -81,26 +85,19 @@ class UnstructuredL1normPrune:
             elif isinstance(module, torch.nn.Linear):
                 prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
         return self.model
-
-
-class Train_and_prune_and_retrain:
-    def __init__(self, model, epochs, train_loader, criterion, optimizer, pruning_rate):
-        self.model = model
-        self.train_loader = train_loader
-        self.criterion = criterion
-        self.optimizer = optimizer
-        self.epochs = epochs
-        self.pruning_rate = pruning_rate
-
-    def train_and_prune_and_retrain(self):
+    
+    def train_prune_retrain(self):
         #train the model, prune it and retrain it.
         trainer = Trainer(self.model, self.epochs,self.train_loader, self.criterion, self.optimizer)
         trainer.train()
         print("Training is done")
-        unstructured_prune = UnstructuredL1normPrune(self.model, self.pruning_rate)
+        unstructured_prune = UnstructuredL1normPrune(self.model, self.epochs,self.train_loader, self.criterion, self.optimizer,self.pruning_rate)
         pruned_model = unstructured_prune.prune_model()
         print("Pruning is done")
         trainer = Trainer(pruned_model, self.epochs,self.train_loader, self.criterion, self.optimizer)
         trainer.train()
         print("Retraining after pruning is done")
         return pruned_model
+        
+
+
