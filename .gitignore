@@ -1,0 +1,17 @@
+**/.idea/
+**/__pycache__/
+
+### IntelliJ IDEA ###
+/.idea/
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
+
+**/*.ipynb_checkpoints/
