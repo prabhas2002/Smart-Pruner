@@ -1,11 +1,11 @@
 from pathlib import Path
+
 print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 import torch
-import matplotlib.pyplot as plt
 import math
 from tqdm.auto import tqdm
 
-# has to saperate next
+
 class Trainer:
     def __init__(
             self,
@@ -54,5 +54,4 @@ class Trainer:
             )
             self.loss["train"].append(math.log(train_loss))  # using log loss
 
-        return self.loss
-
+        return self.model
