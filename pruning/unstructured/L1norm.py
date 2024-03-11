@@ -1,5 +1,7 @@
 # basic implementation of network based on L1 norm structured .
+import copy
 from pathlib import Path
+
 print('Running' if __name__ == '__main__' else 'Importing', Path(__file__).resolve())
 import os
 import torch
@@ -8,7 +10,7 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 from tqdm import tqdm
 
-from train import Trainer
+from Train import Trainer
 
 
 class UnstructuredL1normPrune:
@@ -42,6 +44,7 @@ class Train_and_prune_and_retrain:
         #train the model, prune it and retrain it.
         trainer = Trainer(self.model, self.epochs,self.train_loader, self.criterion, self.optimizer)
         trainer.train()
+        model = copy.deepcopy(self.model)
         print("Training is done")
         unstructured_prune = UnstructuredL1normPrune(self.model, self.pruning_rate)
         pruned_model = unstructured_prune.prune_model()
