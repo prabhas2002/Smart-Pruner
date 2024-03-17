@@ -1,2 +1,3 @@
 from .Lenet import Lenet
-from .AlexNet_cifar10 import AlexNet
+from .AlexNet_cifar_10 import AlexNet
+from .ResNet import *

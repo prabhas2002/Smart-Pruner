@@ -32,17 +32,17 @@ class DecayPrune:
                 if isinstance(module, torch.nn.Conv2d) or isinstance(module, torch.nn.Linear):
                     prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
                     prune.remove(module, name='weight')
-                    prune.l1_unstructured(module, name='bias', amount=self.pruning_rate)
-                    prune.remove(module, name='bias')
                     self.pruning_rate = self.pruning_rate + self.decay #Increasing decay rate as layers go deeper
+                    if self.pruning_rate >= 1.0:
+                        self.pruning_rate= 0.995 #To avoid over flows
         else:
             for name, module in self.model.named_modules():
                 if isinstance(module, torch.nn.Conv2d) or isinstance(module, torch.nn.Linear):
                     prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
                     prune.remove(module, name='weight')
-                    prune.l1_unstructured(module, name='bias', amount=self.pruning_rate)
-                    prune.remove(module, name='bias')
                     self.pruning_rate = self.pruning_rate - self.decay #Decreasing decay rate as layers go deeper
+                    if self.pruning_rate<= 0.0:
+                        self.pruning_rate = 0.05 #To avoid under flows
         return self.model
 
     def train_prune_retrain(self):
