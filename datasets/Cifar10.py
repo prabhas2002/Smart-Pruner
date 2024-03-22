@@ -2,6 +2,11 @@ import torch
 import torchvision
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+import torch
+import torchvision
+import torchvision.datasets as datasets
+import torchvision.transforms as transforms
+
 class CIFAR10:
     def __init__(self, batch_size=128, shuffle=True):
         self.batch_size = batch_size

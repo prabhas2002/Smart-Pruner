@@ -10,7 +10,7 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 from tqdm import tqdm
 
-from Train import Trainer
+from pruning.Train import Trainer
 
 
 class UnstructuredL1normPrune:

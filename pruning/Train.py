@@ -27,11 +27,14 @@ class Trainer:
     def train_step(self):
         self.model.train()  # setting model to training mode
         train_loss = 0
+        device=("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(device)
 
         # setting requires_grad =True
         with torch.set_grad_enabled(True):
             for batch, (X, y) in enumerate(self.train_loader):
                 # forward pass
+                X,y= X.to(device),y.to(device)
                 y_pred = self.model(X)
                 # calculate and sum loss
                 loss = self.criterion(y_pred, y)

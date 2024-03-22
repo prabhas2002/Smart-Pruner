@@ -68,7 +68,7 @@ def accuracy(model, dataloader, topk=(1,)):
     # Normalize over data length
     accs /= len(dataloader.dataset)
 
-    return accs
+    return 100*accs
 
 
 # def weights_sum(model):
