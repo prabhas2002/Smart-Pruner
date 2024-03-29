@@ -11,13 +11,13 @@ VGG_types = {
 
 
 class VGG_net(nn.Module):
-    def __init__(self, in_channels=3, num_classes=1000):
+    def __init__(self, in_channels, num_classes):
         super(VGG_net, self).__init__()
         self.in_channels = in_channels
-        self.conv_layers = self.create_conv_layers(VGG_types['VGG16'])
+        self.conv_layers = self.create_conv_layers(VGG_types['VGG11'])
         
         self.fcs = nn.Sequential(
-            nn.Linear(512*7*7, 4096),
+            nn.Linear(512*1*1, 4096),
             nn.ReLU(),
             nn.Linear(4096, 4096),
             nn.ReLU(),
@@ -46,6 +46,10 @@ class VGG_net(nn.Module):
                 layers += [nn.MaxPool2d(kernel_size=(2,2), stride=(2,2))]
                 
         return nn.Sequential(*layers)
+def VGG_Cifar10(in_channels=3,num_classes=10):
+    return VGG_net(in_channels,num_classes)
+def VGG_Cifar100(in_channels=3,num_classes=100):
+    return VGG_net(in_channels,num_classes)
 
 # if __name__ == '__main__':
 #     device = 'cuda' if torch.cuda.is_available() else 'cpu'
