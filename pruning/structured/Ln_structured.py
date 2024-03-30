@@ -12,25 +12,26 @@ from tqdm import tqdm
 
 from pruning.Train import Trainer
 
-
-class UnstructuredL1normPrune:
-    def __init__(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.5):
+class LnStructuredPrune:
+    def __init__(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.5,norm=1,dim=1):
         self.model = model
         self.pruning_rate = pruning_rate
         self.optimizer = optimizer
         self.epochs = epochs
         self.train_loader = train_loader
         self.criterion = criterion
-
+        self.norm = norm
+        self.dim = dim
+        
     def prune_model(self):
         # prune the model and return it.
         model = copy.deepcopy(self.model)
         for name, module in model.named_modules():
             if isinstance(module, torch.nn.Conv2d):
-                prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
+                prune.ln_structured(module, name='weight', amount=self.pruning_rate, n=self.norm, dim=self.dim)
                 prune.remove(module, name='weight')
             elif isinstance(module, torch.nn.Linear):
-                prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
+                prune.ln_structured(module, name='weight', amount=self.pruning_rate, n=self.norm, dim=self.dim)
                 prune.remove(module, name='weight')
         return model
 
@@ -40,7 +41,7 @@ class UnstructuredL1normPrune:
         trainer.train()
         model = copy.deepcopy(self.model)
         print("Training is done")
-        unstructured_prune = UnstructuredL1normPrune(self.model, self.epochs, self.train_loader, self.criterion,
+        unstructured_prune = LnStructuredPrune(self.model, self.epochs, self.train_loader, self.criterion,
                                                      self.optimizer, self.pruning_rate)
         pruned_model = unstructured_prune.prune_model()
         print("Pruning is done")
@@ -48,3 +49,5 @@ class UnstructuredL1normPrune:
         # trainer.train()
         # print("Retraining after pruning is done")
         return model, pruned_model
+    
+

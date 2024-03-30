@@ -25,13 +25,13 @@ class two_to_four_prune:
     def prune_model(self):
         # prune the model and return it.
         # Iterate through each layer of the model
-        
-        for name, module in self.model.named_children():
+        model = copy.deepcopy(self.model)
+        for name, module in model.named_children():
             # Apply pruning to the weight parameter of the module
             inst =PruningMethod(module)
             inst.two_to_four_structured(module, 'weight', module)
             prune.remove(module, 'weight')
-        return self.model
+        return model
 
     def train_prune_retrain(self):
         # train the model, prune it and retrain it.
