@@ -100,10 +100,10 @@ def compression_ratio(model, pruned_model):
 
 # Will add a new function to count flops
 
-def measure_latency_cpu_usage(model, dataloader):
+def measure_latency(model, dataloader):
     device = next(model.parameters()).device
     process = psutil.Process()
-    cpu_start = process.cpu_percent()
+    # cpu_start = process.cpu_percent()
     start = time.time()
     with torch.no_grad():
         for i, (input, target) in enumerate(dataloader):
@@ -113,5 +113,13 @@ def measure_latency_cpu_usage(model, dataloader):
     end = time.time()
     cpu_end = process.cpu_percent()
     latency = end - start
-    cpu_usage = cpu_end - cpu_start
-    return latency, cpu_usage
+    # cpu_usage = cpu_end - cpu_start
+    return latency
+
+def measure_speedup(model, pruned_model, dataloader):
+    model_latency = measure_latency(model, dataloader)
+    pruned_model_latency = measure_latency(pruned_model, dataloader)
+    print("Model latency = " + str(model_latency), end=" ")
+    print("Pruned model latency = " + str(pruned_model_latency))
+    return model_latency/pruned_model_latency
+
