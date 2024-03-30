@@ -13,7 +13,17 @@ from tqdm import tqdm
 from pruning.Train import Trainer
 
 class LnStructuredPrune:
-    def __init__(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.5,norm=1,dim=1):
+    def __init__(self, model=None, epochs=None, train_loader=None, criterion=None, optimizer=None, pruning_rate=0.5,norm=1,dim=1):
+        self.model = model
+        self.pruning_rate = pruning_rate
+        self.optimizer = optimizer
+        self.epochs = epochs
+        self.train_loader = train_loader
+        self.criterion = criterion
+        self.norm = norm
+        self.dim = dim
+        
+    def setargs(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.5,norm=1,dim=1):
         self.model = model
         self.pruning_rate = pruning_rate
         self.optimizer = optimizer

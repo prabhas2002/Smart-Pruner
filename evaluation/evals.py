@@ -91,6 +91,9 @@ def non_zero_weights(model):
 
 
 def compression_ratio(model, pruned_model):
-    return non_zero_weights(pruned_model) / non_zero_weights(model)
+    pruned_weights = non_zero_weights(pruned_model)
+    if pruned_weights == 0:
+        return float('inf')
+    return non_zero_weights(model) / pruned_weights
 
 # Will add a new function to count flops
