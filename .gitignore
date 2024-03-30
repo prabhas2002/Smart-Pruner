@@ -1,5 +1,7 @@
 **/.idea/
 **/__pycache__/
+**/*.pyc
+**/venv/
 
 ### IntelliJ IDEA ###
 /.idea/

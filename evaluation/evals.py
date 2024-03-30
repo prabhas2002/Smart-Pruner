@@ -2,6 +2,8 @@
 
 import numpy as np
 import torch
+import time
+import psutil
 
 
 def correct(output, target, topk=(1,)):
@@ -97,3 +99,19 @@ def compression_ratio(model, pruned_model):
     return non_zero_weights(model) / pruned_weights
 
 # Will add a new function to count flops
+
+def measure_latency_cpu_usage(model, dataloader):
+    device = next(model.parameters()).device
+    process = psutil.Process()
+    cpu_start = process.cpu_percent()
+    start = time.time()
+    with torch.no_grad():
+        for i, (input, target) in enumerate(dataloader):
+            input = input.to(device)
+            target = target.to(device)
+            output = model(input)
+    end = time.time()
+    cpu_end = process.cpu_percent()
+    latency = end - start
+    cpu_usage = cpu_end - cpu_start
+    return latency, cpu_usage

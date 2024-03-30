@@ -14,15 +14,7 @@ from pruning.Train import Trainer
 
 
 class GlobalPrune:
-    def __init__(self, model=True, epochs=True, train_loader=True, criterion=True, optimizer=True, pruning_rate=0.5):
-        self.model = model
-        self.pruning_rate = pruning_rate
-        self.optimizer = optimizer
-        self.epochs = epochs
-        self.train_loader = train_loader
-        self.criterion = criterion
-        
-    def setargs(self, model, epochs, train_loader, criterion, optimizer, pruning_rate):
+    def __init__(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.5):
         self.model = model
         self.pruning_rate = pruning_rate
         self.optimizer = optimizer

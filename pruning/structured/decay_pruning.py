@@ -38,9 +38,8 @@ class DecayPrune:
         # prune the model and return it.
         model = copy.deepcopy(self.model)
         if self.reverse:
-            # self.pruning_rate = (len(list(self.model.parameters()))-1) * self.decay
-            i=1
-            for name, module in reversed(list(model.named_modules())):
+            self.pruning_rate -= (len(list(model.parameters()))-1) * self.decay
+            for name, module in model.named_modules():
                 if isinstance(module, torch.nn.Conv2d) or isinstance(module, torch.nn.Linear):
                     prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
                     prune.remove(module, name='weight')
