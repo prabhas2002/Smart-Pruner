@@ -24,36 +24,38 @@ class DecayPrune:
         self.reverse = reverse
         self.decay = decay
         
-    def setargs(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.5,decay=0.1,reverse=False):
+    def setargs(self, model, epochs, train_loader, criterion, optimizer, pruning_rate=0.8,decay=0.05,reverse=False):
         self.model = model
         self.pruning_rate = pruning_rate
         self.optimizer = optimizer
         self.epochs = epochs
         self.train_loader = train_loader
         self.criterion = criterion
-        self.reverse = reverse
+      #  self.reverse = reverse
         self.decay = decay
 
     def prune_model(self):
         # prune the model and return it.
         model = copy.deepcopy(self.model)
         if self.reverse:
-            self.pruning_rate -= (len(list(model.parameters()))-1) * self.decay
-            for name, module in model.named_modules():
+            # self.pruning_rate -= (len(list(model.parameters()))-1) * self.decay
+            for name, module in reversed(list(model.named_modules())):
+                if self.pruning_rate<= 0.0:
+                        self.pruning_rate = 0.05 #To avoid under flows
                 if isinstance(module, torch.nn.Conv2d) or isinstance(module, torch.nn.Linear):
                     prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
                     prune.remove(module, name='weight')
                     self.pruning_rate = self.pruning_rate - self.decay #Increasing decay rate as layers go deeper
-                    if self.pruning_rate<= 0.0:
-                        self.pruning_rate = 0.05 #To avoid under flows
+                   
         else:
             for name, module in model.named_modules():
+                if self.pruning_rate<= 0.0:
+                        self.pruning_rate = 0.05 #To avoid under flows
                 if isinstance(module, torch.nn.Conv2d) or isinstance(module, torch.nn.Linear):
                     prune.l1_unstructured(module, name='weight', amount=self.pruning_rate)
                     prune.remove(module, name='weight')
                     self.pruning_rate = self.pruning_rate - self.decay #Decreasing decay rate as layers go deeper
-                    if self.pruning_rate<= 0.0:
-                        self.pruning_rate = 0.05 #To avoid under flows
+                    
         return model
 
     def train_prune_retrain(self):
